@@ -19,7 +19,6 @@ function Navbar() {
         <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">
-            {/* <img style={{width:"120px", padding:"6px"}} src="../media/fresh-start-icon.svg" alt="" /> */}
             <Logo style={{width:"120px", padding:"6px"}} />
 
           </a>
