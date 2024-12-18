@@ -20,16 +20,21 @@ const useAxios = () => {
 
     if (!isExpired) return req;
 
-    const response = await axios.post(`${baseURL}/token/refresh/`, {
-      refresh: authTokens.refresh
-    });
-    localStorage.setItem("authTokens", JSON.stringify(response.data));
-    localStorage.setItem("authTokens", JSON.stringify(response.data));
+    try {
+      const response = await axios.post(`${baseURL}/token/refresh/`, {
+        refresh: authTokens.refresh
+      });
 
-    setAuthTokens(response.data);
-    setUser(jwt_decode(response.data.access));
+      localStorage.setItem("authTokens", JSON.stringify(response.data));
+      setAuthTokens(response.data);
+      setUser(jwt_decode(response.data.access));
 
-    req.headers.Authorization = `Bearer ${response.data.access}`;
+      req.headers.Authorization = `Bearer ${response.data.access}`;
+    } catch (error) {
+      console.error("Failed to refresh token", error);
+      // Handle token refresh failure (e.g., redirect to login)
+    }
+
     return req;
   });
 

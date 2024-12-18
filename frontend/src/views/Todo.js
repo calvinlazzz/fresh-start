@@ -87,7 +87,7 @@ function Todo() {
     }
 
     const markTodoAsComplete = async (todo_id) => {
-        await api.patch(baseUrl + '/todo-mark-as-completed/' + user_id + '/' + todo_id + '/')
+        await api.patch(baseUrl + '/todo-mark-as-complete/' + user_id + '/' + todo_id + '/')
         Swal.fire({
             title: "Todo Completed",
             icon:"success",

@@ -80,7 +80,8 @@ class TodoDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class TodoMarkAsCompleted(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TodoSerializer
-    
+    permission_classes = [IsAuthenticated]
+
     def get_object(self):
         user_id = self.kwargs['user_id']
         todo_id = self.kwargs['todo_id']
@@ -89,6 +90,6 @@ class TodoMarkAsCompleted(generics.RetrieveUpdateDestroyAPIView):
 
         todo = Todo.objects.get(id=todo_id, user=user) 
         
-        todo.completed = True
+        todo.completed = not todo.completed
         todo.save()
         return todo
