@@ -36,6 +36,18 @@ function Todo() {
     console.log(createTodo.title);  
 
     const formSubmit = () => {
+        if (!createTodo.title.trim()) {
+            Swal.fire({
+                title: "Error",
+                text: "Todo cannot be empty!",
+                icon: "error",
+                toast: true,
+                timer: 2000,
+                position: "top-right",
+                timerProgressBar: true,
+            });
+            return;
+        }
         const formdata = new FormData()
 
         formdata.append("user", user_id)
