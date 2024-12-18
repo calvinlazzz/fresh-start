@@ -2,6 +2,7 @@ import {useContext} from 'react'
 import jwt_decode from "jwt-decode"
 import AuthContext from '../context/AuthContext'
 import { Link } from 'react-router-dom'
+import {ReactComponent as Logo} from '../media/fresh-start-icon.svg'
 
 function Navbar() {
 
@@ -18,7 +19,8 @@ function Navbar() {
         <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">
-            <img style={{width:"120px", padding:"6px"}} src="https://i.imgur.com/juL1aAc.png" alt="" />
+            {/* <img style={{width:"120px", padding:"6px"}} src="../media/fresh-start-icon.svg" alt="" /> */}
+            <Logo style={{width:"120px", padding:"6px"}} />
 
           </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
