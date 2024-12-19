@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from api.models import User, Todo
+from .quotes import get_quote
+
 
 from api.serializer import MyTokenObtainPairSerializer, RegisterSerializer, TodoSerializer
 

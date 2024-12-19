@@ -16,5 +16,7 @@ urlpatterns = [
     path("todo/<user_id>/", views.TodoListView.as_view()),
     path("todo-detail/<user_id>/<todo_id>/", views.TodoDetailView.as_view()),
     path("todo-mark-as-complete/<user_id>/<todo_id>/", views.TodoMarkAsCompleted.as_view()),
+    path('get-quote/', views.get_quote, name='get_quote'),
+
 
 ]

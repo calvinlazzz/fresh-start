@@ -166,11 +166,7 @@ function Todo() {
     const handleTitleChange = (event) => {
         setEditingTitle(event.target.value);
     };
-    const handleNewTodoKeyPress = (event) => {
-        if (event.key === 'Enter') {
-            formSubmit();
-        }
-    };
+
     const handleTitleBlur = async (todo_id) => {
         try {
             const formdata = new FormData();
@@ -209,10 +205,16 @@ function Todo() {
         }
     };
 
+    const handleNewTodoKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            formSubmit();
+        }
+    };
+
     return (
         <div>
-            <div style={{ marginTop: "140px" }}>
-                <h1 class = "h1">Welcome, {decoded.username}</h1>
+            <div style={{ marginTop: "160px" }}>
+                <h1>Welcome, {decoded.username}</h1>
             </div>
             <div className="container" style={{ marginTop: "10px", padding: "10px" }}>
                 <div className="row justify-content-center align-items-center main-row">
@@ -224,7 +226,16 @@ function Todo() {
                         </div>
                         <div className="row justify-content-between text-white p-2">
                             <div className="form-group flex-fill mb-2">
-                                <input id="todo-input" name='title' onChange={handleNewTodoTitle} onKeyPress={handleNewTodoKeyPress} value={createTodo.title} type="text" className="form-control" placeholder='Write a todo...' />
+                                <input
+                                    id="todo-input"
+                                    name='title'
+                                    onChange={handleNewTodoTitle}
+                                    onKeyPress={handleNewTodoKeyPress}
+                                    value={createTodo.title}
+                                    type="text"
+                                    className="form-control"
+                                    placeholder='Write a todo...'
+                                />
                             </div>
                             <button type="button" onClick={formSubmit} className="btn btn-primary mb-2 ml-2"> Add todo </button>
                         </div>
@@ -242,11 +253,27 @@ function Todo() {
                                                 className="form-control"
                                             />
                                         ) : (
-                                            <p className="form-control" onClick={() => handleTitleClick(todo)}>{todo.title}</p>
+                                            <p className="form-control" onClick={() => handleTitleClick(todo)}>
+                                                {todo.completed ? <strike>{todo.title}</strike> : todo.title}
+                                            </p>
                                         )}
                                         <div className="input-group-append">
-                                            <button className="btn bg-success text-white ml-2" type="button" id="button-addon2" onClick={() => markTodoAsComplete(todo.id)}><i className='fas fa-check'></i></button>
-                                            <button className="btn bg-danger text-white me-2 ms-2 ml-2" type="button" id="button-addon2" onClick={() => deleteTodo(todo.id)}><i className='fas fa-trash'></i></button>
+                                            <button
+                                                className={`btn ${todo.completed ? 'bg-warning' : 'bg-success'} text-white ml-2`}
+                                                type="button"
+                                                id="button-addon2"
+                                                onClick={() => markTodoAsComplete(todo.id)}
+                                            >
+                                                <i className='fas fa-check'></i>
+                                            </button>
+                                            <button
+                                                className="btn bg-danger text-white me-2 ms-2 ml-2"
+                                                type="button"
+                                                id="button-addon2"
+                                                onClick={() => deleteTodo(todo.id)}
+                                            >
+                                                <i className='fas fa-trash'></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

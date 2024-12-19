@@ -10,6 +10,7 @@ import Loginpage from './views/Loginpage'
 import Dashboard from './views/Dashboard'
 import Navbar from './views/Navbar'
 import Todo from './views/Todo'
+import Quote from './views/Quote'
 
 
 
@@ -24,6 +25,7 @@ function App() {
           <Route component={Registerpage} path="/register" exact />
           <Route component={Homepage} path="/" exact />
           <Route component={Todo} path="/todo" exact />
+          <Route component={Quote} path="/quote" exact />
         </Switch>
       </AuthProvider>
     </Router>
