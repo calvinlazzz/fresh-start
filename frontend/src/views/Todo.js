@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import useAxios from '../utils/useAxios';
 import jwtDecode from 'jwt-decode';
 import Swal from 'sweetalert2';
+import Quote from './Quote';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 function Todo() {
     const baseUrl = "http://127.0.0.1:8000/api";
@@ -22,7 +24,6 @@ function Todo() {
     const fetchTodos = async () => {
         try {
             const res = await api.get(`/todo/${user_id}/`);
-            console.log(res.data);
             setTodo(res.data);
         } catch (error) {
             console.log(error);
@@ -46,7 +47,6 @@ function Todo() {
         });
     };
 
-    console.log(createTodo.title);
 
     const formSubmit = async () => {
         if (!createTodo.title.trim()) {
@@ -173,15 +173,17 @@ function Todo() {
             formdata.append("title", editingTitle);
 
             await api.patch(`/todo-detail/${user_id}/${todo_id}/`, formdata);
-
-            Swal.fire({
-                title: "Todo Updated",
-                icon: "success",
-                toast: true,
-                timer: 2000,
-                position: "top-right",
-                timerProgressBar: true,
-            });
+            if (editingTitle !== todo.find(todo => todo.id === todo_id).title) {
+                Swal.fire({
+                    title: "Todo Updated",
+                    icon: "success",
+                    toast: true,
+                    timer: 2000,
+                    position: "top-right",
+                    timerProgressBar: true,
+                });
+            }
+            
 
             fetchTodos();
             setEditingTodoId(null);
@@ -210,16 +212,20 @@ function Todo() {
             formSubmit();
         }
     };
+    const onDragEnd = (result) => {
+        // Handle the drag and drop logic here
+        console.log(result);
+    };
 
     return (
         <div>
-            <div style={{ marginTop: "160px" }}>
-                <h1>Welcome, {decoded.username}</h1>
+            <div style={{ marginTop: "160px", display: "flex", justifyContent: "center" }}>
+                <Quote />
             </div>
             <div className="container" style={{ marginTop: "10px", padding: "10px" }}>
                 <div className="row justify-content-center align-items-center main-row">
                     <div className="col shadow main-col bg-white">
-                        <div className="row bg-primary text-white">
+                        <div className="row text-black" style= {{backgroundColor: "#B0E0E6"}}>
                             <div className="col p-2">
                                 <h4>Dailies</h4>
                             </div>
@@ -236,9 +242,11 @@ function Todo() {
                                     className="form-control"
                                     placeholder='Write a todo...'
                                 />
-                            </div>
-                            <button type="button" onClick={formSubmit} className="btn btn-primary mb-2 ml-2"> Add todo </button>
+                            </div>                         
+                            <button type="button" onClick={formSubmit} className="btn btn-primary mb-2 ml-2" style= {{backgroundColor: "#B0E0E6"}}> Add todo </button>
                         </div>
+          
+
                         <div className="row" id="todo-container">
                             {todo.map((todo) =>
                                 <div className="col col-12 p-2 todo-item" key={todo.id}>
@@ -279,6 +287,7 @@ function Todo() {
                                 </div>
                             )}
                         </div>
+                      
                     </div>
                 </div>
             </div>

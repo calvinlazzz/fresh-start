@@ -9,10 +9,25 @@ function Navbar() {
   const {user, logoutUser} = useContext(AuthContext)
   const token = localStorage.getItem("authTokens")
 
-  if (token){
+
     const decoded = jwt_decode(token) 
     var user_id = decoded.user_id
-  }
+    const hStyle = {color: "#B0E0E6"};
+
+    var today = new Date();
+    var time = today.getHours();
+    var greet;
+    
+    if (time > 18) {
+      greet = 'Good evening';
+    } else if (time > 12) {
+      greet = 'Good afternoon';
+    } else if (time >= 0) {
+      greet = 'Good morning';
+    } else {
+      greet = 'Something wrong!';
+    }
+  
 
   return (
     <div>
@@ -56,8 +71,10 @@ function Navbar() {
               }   
               
             </ul>
+            
           </div>
-        </div>
+          <h1 style={hStyle}>{greet}, {decoded.username}!</h1>
+          </div>
       </nav>
     </div>
   )

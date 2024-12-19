@@ -11,7 +11,7 @@ urlpatterns = [
     path('register/', views.RegisterView.as_view(), name='auth_register'),
     path('test/', views.testEndPoint, name='test'),
     path('', views.getRoutes),
-
+                                                  
     # Todo URLS
     path("todo/<user_id>/", views.TodoListView.as_view()),
     path("todo-detail/<user_id>/<todo_id>/", views.TodoDetailView.as_view()),
