@@ -13,6 +13,7 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
+import json
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -95,3 +96,13 @@ class TodoMarkAsCompleted(generics.RetrieveUpdateDestroyAPIView):
         todo.completed = not todo.completed
         todo.save()
         return todo
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_todo_order(request):
+    data = json.loads(request.body)
+    for index, todo_id in enumerate(data['order']):
+        todo = Todo.objects.get(id=todo_id)
+        todo.order = index
+        todo.save()
+    return JsonResponse({'status': 'success'})

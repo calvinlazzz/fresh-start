@@ -47,7 +47,6 @@ function Todo() {
         });
     };
 
-
     const formSubmit = async () => {
         if (!createTodo.title.trim()) {
             Swal.fire({
@@ -173,17 +172,15 @@ function Todo() {
             formdata.append("title", editingTitle);
 
             await api.patch(`/todo-detail/${user_id}/${todo_id}/`, formdata);
-            if (editingTitle !== todo.find(todo => todo.id === todo_id).title) {
-                Swal.fire({
-                    title: "Todo Updated",
-                    icon: "success",
-                    toast: true,
-                    timer: 2000,
-                    position: "top-right",
-                    timerProgressBar: true,
-                });
-            }
-            
+
+            Swal.fire({
+                title: "Todo Updated",
+                icon: "success",
+                toast: true,
+                timer: 2000,
+                position: "top-right",
+                timerProgressBar: true,
+            });
 
             fetchTodos();
             setEditingTodoId(null);
@@ -212,9 +209,31 @@ function Todo() {
             formSubmit();
         }
     };
-    const onDragEnd = (result) => {
-        // Handle the drag and drop logic here
-        console.log(result);
+
+    const onDragEnd = async (result) => {
+        if (!result.destination) return;
+
+        const items = Array.from(todo);
+        const [reorderedItem] = items.splice(result.source.index, 1);
+        items.splice(result.destination.index, 0, reorderedItem);
+
+        setTodo(items);
+
+        // Send the new order to the backend
+        try {
+            await api.post('/update-todo-order/', { order: items.map(item => item.id) });
+        } catch (error) {
+            console.log(error);
+            Swal.fire({
+                title: "Error",
+                text: "An error occurred while updating the todo order",
+                icon: "error",
+                toast: true,
+                timer: 2000,
+                position: "top-right",
+                timerProgressBar: true,
+            });
+        }
     };
 
     return (
@@ -225,7 +244,7 @@ function Todo() {
             <div className="container" style={{ marginTop: "10px", padding: "10px" }}>
                 <div className="row justify-content-center align-items-center main-row">
                     <div className="col shadow main-col bg-white">
-                        <div className="row text-black" style= {{backgroundColor: "#B0E0E6"}}>
+                        <div className="row text-black" style={{ backgroundColor: "#B0E0E6" }}>
                             <div className="col p-2">
                                 <h4>Dailies</h4>
                             </div>
@@ -242,52 +261,60 @@ function Todo() {
                                     className="form-control"
                                     placeholder='Write a todo...'
                                 />
-                            </div>                         
-                            <button type="button" onClick={formSubmit} className="btn btn-primary mb-2 ml-2" style= {{backgroundColor: "#B0E0E6"}}> Add todo </button>
+                            </div>
+                            <button type="button" onClick={formSubmit} className="btn btn-primary mb-2 ml-2" style={{ backgroundColor: "#B0E0E6" }}> Add todo </button>
                         </div>
-          
-
-                        <div className="row" id="todo-container">
-                            {todo.map((todo) =>
-                                <div className="col col-12 p-2 todo-item" key={todo.id}>
-                                    <div className="input-group">
-                                        {editingTodoId === todo.id ? (
-                                            <input
-                                                type="text"
-                                                value={editingTitle}
-                                                onChange={handleTitleChange}
-                                                onBlur={() => handleTitleBlur(todo.id)}
-                                                onKeyPress={(event) => handleTitleKeyPress(event, todo.id)}
-                                                className="form-control"
-                                            />
-                                        ) : (
-                                            <p className="form-control" onClick={() => handleTitleClick(todo)}>
-                                                {todo.completed ? <strike>{todo.title}</strike> : todo.title}
-                                            </p>
-                                        )}
-                                        <div className="input-group-append">
-                                            <button
-                                                className={`btn ${todo.completed ? 'bg-warning' : 'bg-success'} text-white ml-2`}
-                                                type="button"
-                                                id="button-addon2"
-                                                onClick={() => markTodoAsComplete(todo.id)}
-                                            >
-                                                <i className='fas fa-check'></i>
-                                            </button>
-                                            <button
-                                                className="btn bg-danger text-white me-2 ms-2 ml-2"
-                                                type="button"
-                                                id="button-addon2"
-                                                onClick={() => deleteTodo(todo.id)}
-                                            >
-                                                <i className='fas fa-trash'></i>
-                                            </button>
-                                        </div>
+                        <DragDropContext onDragEnd={onDragEnd}>
+                            <Droppable droppableId="todo-container">
+                                {(provided) => (
+                                    <div className="row" id="todo-container" {...provided.droppableProps} ref={provided.innerRef}>
+                                        {todo.map((todo, index) => (
+                                            <Draggable key={todo.id} draggableId={todo.id.toString()} index={index}>
+                                                {(provided) => (
+                                                    <div className="col col-12 p-2 todo-item" ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                                        <div className="input-group">
+                                                            {editingTodoId === todo.id ? (
+                                                                <input
+                                                                    type="text"
+                                                                    value={editingTitle}
+                                                                    onChange={handleTitleChange}
+                                                                    onBlur={() => handleTitleBlur(todo.id)}
+                                                                    onKeyPress={(event) => handleTitleKeyPress(event, todo.id)}
+                                                                    className="form-control"
+                                                                />
+                                                            ) : (
+                                                                <p className="form-control" onClick={() => handleTitleClick(todo)}>
+                                                                    {todo.completed ? <strike>{todo.title}</strike> : todo.title}
+                                                                </p>
+                                                            )}
+                                                            <div className="input-group-append">
+                                                                <button
+                                                                    className={`btn ${todo.completed ? 'bg-warning' : 'bg-success'} text-white ml-2`}
+                                                                    type="button"
+                                                                    id="button-addon2"
+                                                                    onClick={() => markTodoAsComplete(todo.id)}
+                                                                >
+                                                                    <i className='fas fa-check'></i>
+                                                                </button>
+                                                                <button
+                                                                    className="btn bg-danger text-white me-2 ms-2 ml-2"
+                                                                    type="button"
+                                                                    id="button-addon2"
+                                                                    onClick={() => deleteTodo(todo.id)}
+                                                                >
+                                                                    <i className='fas fa-trash'></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </Draggable>
+                                        ))}
+                                        {provided.placeholder}
                                     </div>
-                                </div>
-                            )}
-                        </div>
-                      
+                                )}
+                            </Droppable>
+                        </DragDropContext>
                     </div>
                 </div>
             </div>

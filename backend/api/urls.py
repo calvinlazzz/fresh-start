@@ -17,6 +17,8 @@ urlpatterns = [
     path("todo-detail/<user_id>/<todo_id>/", views.TodoDetailView.as_view()),
     path("todo-mark-as-complete/<user_id>/<todo_id>/", views.TodoMarkAsCompleted.as_view()),
     path('get-quote/', views.get_quote, name='get_quote'),
+    path('update-todo-order/', views.update_todo_order, name='update_todo_order'),  # New endpoint
+
 
 
 ]
