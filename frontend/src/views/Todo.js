@@ -222,6 +222,7 @@ function Todo() {
         // Send the new order to the backend
         try {
             await api.post('/update-todo-order/', { order: items.map(item => item.id) });
+            console.log("Todo order updated successfully");
         } catch (error) {
             console.log(error);
             Swal.fire({

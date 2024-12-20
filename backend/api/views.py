@@ -57,7 +57,7 @@ class TodoListView(generics.ListCreateAPIView):
         user_id = self.kwargs['user_id']
         user = User.objects.get(id=user_id)
 
-        todo = Todo.objects.filter(user=user) 
+        todo = Todo.objects.filter(user=user).order_by('order')
         return todo
     # def get_queryset(self):
     #     user_id = self.kwargs.get('user_id')
