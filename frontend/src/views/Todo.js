@@ -8,10 +8,20 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 function Todo() {
     const baseUrl = "http://127.0.0.1:8000/api";
     const api = useAxios();
-
     const token = localStorage.getItem("authTokens");
-    const decoded = jwtDecode(token);
-    const user_id = decoded.user_id;
+    console.log("Token in Todo component:", token);
+    let decoded;
+    if (token) {
+        try {
+            decoded = jwtDecode(token);
+            console.log("Token decoded in Todo component:", decoded);
+        } catch (error) {
+            console.error('Invalid token in Todo component:', error);
+            // Handle invalid token, e.g., redirect to login
+        }
+    }
+
+    const user_id = decoded ? decoded.user_id : null;
 
     const [todo, setTodo] = useState([]);
     const [editingTodoId, setEditingTodoId] = useState(null);
