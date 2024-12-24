@@ -57,4 +57,4 @@ class RegisterSerializer(serializers.ModelSerializer):
 class TodoSerializer(serializers.ModelSerializer):
         class Meta:
             model = Todo
-            fields = ['id','user','title','completed','date']
+            fields = ['id','user','title','completed','date', 'order', 'progress']

@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import useAxios from '../utils/useAxios';
 import jwtDecode from 'jwt-decode';
 import Swal from 'sweetalert2';
 import Quote from './Quote';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { useSpring, animated } from '@react-spring/web';
+import useMeasure from 'react-use-measure';
 
 function Todo() {
     const baseUrl = "http://127.0.0.1:8000/api";
@@ -111,14 +113,16 @@ function Todo() {
             if (!todoItem) {
                 throw new Error("Todo item not found");
             }
-
+    
             const updatedStatus = !todoItem.completed;
-
+            const updatedProgress = updatedStatus ? 100 : 0;
+    
             const formdata = new FormData();
             formdata.append("completed", updatedStatus);
-
+            formdata.append("progress", updatedProgress);
+    
             await api.patch(`/todo-detail/${user_id}/${todo_id}/`, formdata);
-
+    
             Swal.fire({
                 title: updatedStatus ? "Todo Marked as Complete" : "Todo Marked as Incomplete",
                 icon: "success",
@@ -127,7 +131,7 @@ function Todo() {
                 position: "top-right",
                 timerProgressBar: true,
             });
-
+    
             fetchTodos();
         } catch (error) {
             console.log(error);
@@ -142,7 +146,6 @@ function Todo() {
             });
         }
     };
-
     const deleteTodo = async (todo_id) => {
         try {
             setDeletingTodoId(todo_id);
@@ -252,6 +255,45 @@ function Todo() {
             });
         }
     };
+    const incrementProgress = async (todo_id) => {
+        try {
+            const todoItem = todo.find(todo => todo.id === todo_id);
+            if (!todoItem) {
+                throw new Error("Todo item not found");
+            }
+
+            const newProgress = Math.min(todoItem.progress + 25, 100);
+            const updatedStatus = newProgress === 100;
+
+            const formdata = new FormData();
+            formdata.append("progress", newProgress);
+            formdata.append("completed", updatedStatus);
+
+            await api.patch(`/todo-detail/${user_id}/${todo_id}/`, formdata);
+
+            Swal.fire({
+                title: updatedStatus ? "Todo Marked as Complete" : "Progress Updated",
+                icon: "success",
+                toast: true,
+                timer: 2000,
+                position: "top-right",
+                timerProgressBar: true,
+            });
+
+            fetchTodos();
+        } catch (error) {
+            console.log(error);
+            Swal.fire({
+                title: "Error",
+                text: "An error occurred while updating the progress",
+                icon: "error",
+                toast: true,
+                timer: 2000,
+                position: "top-right",
+                timerProgressBar: true,
+            });
+        }
+    };
 
     return (
         <div style={{ backgroundImage: "url('https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6?q=80&w=3538&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')", backgroundSize: "cover", minHeight: "100vh" }}>
@@ -279,7 +321,7 @@ function Todo() {
                                     placeholder='Write a todo...'
                                 />
                             </div>
-                            <button type="button" onClick={formSubmit} className="btn btn-primary mb-2 ml-2" style={{ backgroundColor: "#B0E0E6" }}> Add todo </button>
+                            <button type="button" onClick={formSubmit} className="btn btn-primary mb-2 ml-2" style={{ backgroundColor: "#B0E0E6", border: "white" }}> Add a Daily </button>
                         </div>
                         <DragDropContext onDragEnd={onDragEnd}>
                             <Droppable droppableId="todo-container">
@@ -300,11 +342,20 @@ function Todo() {
                                                                     className="form-control"
                                                                 />
                                                             ) : (
-                                                                <p className="form-control" onClick={() => handleTitleClick(todo)}>
-                                                                    {todo.completed ? <strike>{todo.title}</strike> : todo.title}
-                                                                </p>
+                                                                <p className={`form-control strikethrough ${todo.completed ? 'completed' : ''}`} onClick={() => handleTitleClick(todo)}>
+                                        {todo.title}
+                                    </p>
                                                             )}
                                                             <div className="input-group-append">
+                                                            <button
+                                                                    className="btn bg-info text-white me-2 ms-2 ml-2"
+                                                                    type="button"
+                                                                    id="button-addon2"
+                                                                    onClick={() => incrementProgress(todo.id)}
+                                                                    style={{ borderRadius: "0.5rem" }}
+                                                                >
+                                                                    <i className='fas fa-arrow-up'></i>
+                                                                </button>
                                                                 <button
                                                                     className={`btn ${todo.completed ? 'bg-warning' : 'bg-success'} text-white ml-2`}
                                                                     type="button"
@@ -322,6 +373,9 @@ function Todo() {
                                                                     <i className='fas fa-trash'></i>
                                                                 </button>
                                                             </div>
+                                                        </div>
+                                                        <div className="progress mt-2" style={{ height: "10px", borderRadius: "0.5rem" }}>
+                                                            <animated.div className="progress-bar" role="progressbar" style={{ width: `${todo.progress}%`, backgroundColor: "#17a2b8", borderRadius: "0.5rem" }} />
                                                         </div>
                                                     </div>
                                                 )}

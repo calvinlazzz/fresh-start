@@ -48,6 +48,28 @@ code {
     transform: scale(0.5);
   }
 }
+.strikethrough {
+  position: relative;
+  display: inline-block;
+}
+
+.strikethrough::after {
+  content: '';
+  position: absolute;
+  left: 1px;
+  right: 0px;
+  top: 50%;
+  width: 100%;
+  height: 2px;
+  background: black;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s ease;
+}
+
+.strikethrough.completed::after {
+  transform: scaleX(1);
+}
 
 .todo-item.fade-in {
   animation: fadeIn 0.5s forwards;
@@ -55,4 +77,46 @@ code {
 
 .todo-item.fade-out {
   animation: fadeOut 0.5s forwards;
+}
+.progress {
+  background-color: #e9ecef;
+}
+
+.progress-bar {
+  transition: width 0.5s ease;
+}
+
+@media (max-width: 768px) {
+  .quote-container {
+    padding: 20px;
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .quote-text {
+    word-wrap: break-word;
+  }
+
+  .main-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .main-col {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .input-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .input-group .form-control {
+    margin-bottom: 10px;
+  }
+
+  .input-group .btn {
+    width: 100%;
+  }
 }

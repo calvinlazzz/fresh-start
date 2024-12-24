@@ -38,6 +38,7 @@ class Todo(models.Model):
     completed = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
     order = models.IntegerField(default=0)  # Add this field to store the order
+    progress = models.IntegerField(default=0)  # Add this field to store the progress
 
     
     def __str__(self):
