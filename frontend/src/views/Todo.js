@@ -26,6 +26,7 @@ function Todo() {
     const [todo, setTodo] = useState([]);
     const [editingTodoId, setEditingTodoId] = useState(null);
     const [editingTitle, setEditingTitle] = useState("");
+    const [deletingTodoId, setDeletingTodoId] = useState(null);
 
     useEffect(() => {
         fetchTodos();
@@ -87,8 +88,9 @@ function Todo() {
                 position: "top-right",
                 timerProgressBar: true,
             });
-            fetchTodos();
-            setCreateTodo({ title: "", completed: "" });
+            
+        setTodo(prevTodos => [{ ...res.data, animation: 'fade-in' }, ...prevTodos]);
+        setCreateTodo({ title: "", completed: "" });
         } catch (error) {
             console.log(error);
             Swal.fire({
@@ -143,16 +145,20 @@ function Todo() {
 
     const deleteTodo = async (todo_id) => {
         try {
-            await api.delete(`/todo-detail/${user_id}/${todo_id}/`);
-            Swal.fire({
-                title: "Todo Deleted",
-                icon: "success",
-                toast: true,
-                timer: 2000,
-                position: "top-right",
-                timerProgressBar: true,
-            });
-            fetchTodos();
+            setDeletingTodoId(todo_id);
+            setTimeout(async () => {
+                await api.delete(`/todo-detail/${user_id}/${todo_id}/`);
+                Swal.fire({
+                    title: "Todo Deleted",
+                    icon: "success",
+                    toast: true,
+                    timer: 2000,
+                    position: "top-right",
+                    timerProgressBar: true,
+                });
+                setTodo(prevTodos => prevTodos.filter(todo => todo.id !== todo_id));
+                setDeletingTodoId(null);
+            }, 500); // Match the duration of the fade-out animation
         } catch (error) {
             console.log(error);
             Swal.fire({
@@ -282,7 +288,7 @@ function Todo() {
                                         {todo.map((todo, index) => (
                                             <Draggable key={todo.id} draggableId={todo.id.toString()} index={index}>
                                                 {(provided) => (
-                                                    <div className="col col-12 p-2 todo-item" ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                                    <div className={`col col-12 p-2 todo-item ${todo.animation} ${deletingTodoId === todo.id ? 'fade-out' : ''}`} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                                                         <div className="input-group">
                                                             {editingTodoId === todo.id ? (
                                                                 <input
