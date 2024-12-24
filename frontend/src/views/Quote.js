@@ -19,7 +19,7 @@ const Quote = () => {
     }, []);
 
     return (
-        <div className="quote-container">
+        <div className="quote-container" style = {{marginTop:'40px'}}>
             <h2>Quote of the Day</h2>
             <p>"{quote.quoteText}" - {quote.quoteAuthor}</p>
         </div>

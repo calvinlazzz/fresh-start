@@ -61,7 +61,7 @@ function Navbar() {
             {token !== null && 
               <>
                 
-                <li class="nav-item">
+                <li class="nav-item" style = {{fontFamily: 'Norican', fontSize: '20px'}}>
                   <Link class="nav-link" to="/todo">Dailies</Link>
                 </li>
                 <li class="nav-item">

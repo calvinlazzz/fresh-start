@@ -248,14 +248,14 @@ function Todo() {
     };
 
     return (
-        <div>
-            <div style={{ marginTop: "160px", display: "flex", justifyContent: "center" }}>
+        <div style={{ backgroundImage: "url('https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6?q=80&w=3538&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')", backgroundSize: "cover", minHeight: "100vh" }}>
+            <div style={{ marginTop: "126px", display: "flex", justifyContent: "center" }}>
                 <Quote />
             </div>
             <div className="container" style={{ marginTop: "10px", padding: "10px" }}>
                 <div className="row justify-content-center align-items-center main-row">
-                    <div className="col shadow main-col bg-white">
-                        <div className="row text-black" style={{ backgroundColor: "#B0E0E6" }}>
+                    <div className="col shadow main-col bg-white" style={{ borderRadius: "0.5rem" }}>
+                        <div className="row text-black" style={{ backgroundColor: "#B0E0E6", borderTopLeftRadius: "0.5rem", borderTopRightRadius: "0.5rem" }}>
                             <div className="col p-2">
                                 <h4>Dailies</h4>
                             </div>

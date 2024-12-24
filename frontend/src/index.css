@@ -8,6 +8,10 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', 
     monospace;
+}
+@font-face {
+  font-family: 'Norican';
+  src: url(./fonts/Norican-Regular.ttf) format('truetype');
 }

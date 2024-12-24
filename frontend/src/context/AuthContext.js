@@ -54,15 +54,15 @@ export const AuthProvider = ({ children }) => {
             setUser(jwt_decode(data.access));
             localStorage.setItem("authTokens", JSON.stringify(data));
             console.log("Token stored on login:", JSON.stringify(data));
-            history.push("/");
+            history.push("/todo");
             swal.fire({
                 title: "Login Successful",
                 icon: "success",
                 toast: true,
-                timer: 6000,
+                timer: 4000,
                 position: 'top-right',
                 timerProgressBar: true,
-                showConfirmButton: false,
+                showConfirmButton: true,
             });
 
         } else {
@@ -126,10 +126,10 @@ export const AuthProvider = ({ children }) => {
             title: "You have been logged out...",
             icon: "success",
             toast: true,
-            timer: 6000,
+            timer: 4000,
             position: 'top-right',
             timerProgressBar: true,
-            showConfirmButton: false,
+            showConfirmButton: true,
         });
     };
 

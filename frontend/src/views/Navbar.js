@@ -19,7 +19,7 @@ function Navbar() {
         }
     }
 
-    const hStyle = { color: "#B0E0E6" };
+    const hStyle = { color: "black" };
 
     const today = new Date();
     const time = today.getHours();
@@ -27,7 +27,7 @@ function Navbar() {
 
     return (
         <div>
-            <nav className="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+            <nav className="navbar navbar-expand-lg navbar-light fixed-top " style = {{backgroundColor: "#B0E0E6"}}>
                 <div className="container-fluid">
                     <a className="navbar-brand" href="#">
                         <Logo style={{ width: "100px", padding: "2px" }} />
@@ -46,9 +46,7 @@ function Navbar() {
                     <div className="collapse navbar-collapse" id="navbarNav">
                         <ul className="navbar-nav">
                             <li className="nav-item">
-                                <a className="nav-link active" aria-current="page" href="#">
-                                    Home
-                                </a>
+                                
                             </li>
                             {decoded === null ? (
                                 <>
@@ -66,22 +64,30 @@ function Navbar() {
                             ) : (
                                 <>
                                     <li className="nav-item">
-                                        <Link className="nav-link" to="/todo">
+                                        <Link className="nav-link" to="/todo" style = {{fontFamily: 'Norican', color: 'white', fontSize: '60px'}}>
                                             Dailies
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <a className="nav-link" onClick={logoutUser} style={{ cursor: "pointer" }}>
-                                            Logout
-                                        </a>
+                                        
                                     </li>
                                 </>
                             )}
                         </ul>
+                        <div className="nav-item">
+                          <span className="nav-link" style={{ color: 'white', fontSize: '20px' }}>
+                            Date: 
+                            {today.toLocaleDateString()}
+                            Weather: Sunny, 25°C
+                          </span>
+                        </div>
                     </div>
                     <h1 style={hStyle}>
                         {greet}, {decoded ? decoded.username : "Guest"}!
                     </h1>
+                    <a className="nav-link" onClick={logoutUser} style={{ cursor: "pointer" }}>
+                                            Logout
+                                        </a>
                 </div>
             </nav>
         </div>
