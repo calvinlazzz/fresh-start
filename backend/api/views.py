@@ -2,6 +2,9 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from api.models import User, Todo
 from .quotes import get_quote
+from .weather import get_weather
+from rest_framework.decorators import api_view
+
 
 
 from api.serializer import MyTokenObtainPairSerializer, RegisterSerializer, TodoSerializer
@@ -106,3 +109,9 @@ def update_todo_order(request):
         todo.order = index
         todo.save()
     return JsonResponse({'status': 'success'})
+
+
+@api_view(['GET'])
+def fetch_weather(request, city):
+    weather_data = get_weather(city)
+    return JsonResponse(weather_data, safe=False)

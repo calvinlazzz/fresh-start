@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from .views import fetch_weather
+
 
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -17,7 +19,8 @@ urlpatterns = [
     path("todo-detail/<user_id>/<todo_id>/", views.TodoDetailView.as_view()),
     path("todo-mark-as-complete/<user_id>/<todo_id>/", views.TodoMarkAsCompleted.as_view()),
     path('get-quote/', views.get_quote, name='get_quote'),
-    path('update-todo-order/', views.update_todo_order, name='update_todo_order'),  # New endpoint
+    path('update-todo-order/', views.update_todo_order, name='update_todo_order'), # New endpoint
+    path('weather/<str:city>/', fetch_weather, name='fetch_weather'),
 
 
 
