@@ -115,3 +115,30 @@ def update_todo_order(request):
 def fetch_weather(request, city):
     weather_data = get_weather(city)
     return JsonResponse(weather_data, safe=False)
+
+@api_view(['GET'])
+def get_user_city(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        return JsonResponse({'city': user.city}, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+def update_city(request):
+    user_id = request.data.get('user_id')
+    city = request.data.get('city')
+    if city and user_id:
+        try:
+            # Validate the city by fetching weather data
+            weather_data = get_weather(city)
+            if 'city' in weather_data:
+                user = User.objects.get(id=user_id)
+                user.city = city
+                user.save()
+                return Response({'message': 'City updated successfully'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Invalid city name'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return Response({'error': 'City or user_id not provided'}, status=status.HTTP_400_BAD_REQUEST)

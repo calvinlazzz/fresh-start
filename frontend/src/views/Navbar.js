@@ -4,6 +4,8 @@ import AuthContext from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import { ReactComponent as Logo } from "../media/fresh-start-icon.svg";
 import Weather from "./Weather";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 function Navbar() {
     const { user, logoutUser } = useContext(AuthContext);
@@ -24,22 +26,62 @@ function Navbar() {
     const time = today.getHours();
     const greet = time > 18 ? "Good evening" : time > 12 ? "Good afternoon" : "Good morning";
 
-    const [city, setCity] = useState("New York");
-    const [inputCity, setInputCity] = useState("New York");
+    const [city, setCity] = useState("");
+    const [inputCity, setInputCity] = useState("");
     const [showForm, setShowForm] = useState(false);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+      if (decoded) {
+          // Fetch user's city from the backend if not available in the token
+          const fetchUserCity = async () => {
+              try {
+                  const response = await axios.get(`http://127.0.0.1:8000/api/user/${decoded.user_id}/`);
+                  setCity(response.data.city);
+                  setInputCity(response.data.city);
+                  console.log("City fetched from backend:", response.data.city);
+              } catch (error) {
+                  console.error("Error fetching user's city:", error);
+              }
+          };
+          fetchUserCity();
+      }
+  }, []);
 
     const handleCityChange = (event) => {
         setInputCity(event.target.value);
     };
 
-    // Debounce input changes and update city
-    useEffect(() => {
-        const timer = setTimeout(() => {
+    const handleCitySubmit = async (event) => {
+        event.preventDefault();
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/api/update-city/', {
+                user_id: decoded.user_id,
+                city: inputCity.trim()
+            });
             setCity(inputCity.trim());
-        }, 500); // 500ms delay for debouncing
-
-        return () => clearTimeout(timer); // Cleanup previous timers
-    }, [inputCity]);
+            setShowForm(false);
+            setError(null);
+        } catch (error) {
+            if (error.response && error.response.data && error.response.data.error) {
+                setError(error.response.data.error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: error.response.data.error,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                setError('An error occurred while updating the city.');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while updating the city.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
+    };
 
     const toggleForm = () => {
         setShowForm((prev) => !prev);
@@ -100,7 +142,7 @@ function Navbar() {
                                     <Weather city={city} />
                                 </div>
                                 {showForm && (
-                                    <div style={{ marginTop: "10px" }}>
+                                    <form onSubmit={handleCitySubmit} style={{ marginTop: "10px" }}>
                                         <label htmlFor="city" style={{ color: "white", marginRight: "10px" }}>City:</label>
                                         <input
                                             type="text"
@@ -109,8 +151,13 @@ function Navbar() {
                                             onChange={handleCityChange}
                                             placeholder="Enter city"
                                             style={{ marginRight: "10px", padding: "5px" }}
+                                            onKeyPress={(event) => {
+                                                if (event.key === 'Enter') {
+                                                    handleCitySubmit(event);
+                                                }
+                                            }}
                                         />
-                                    </div>
+                                    </form>
                                 )}
                             </div>
                         </div>
