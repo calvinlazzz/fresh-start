@@ -20,13 +20,13 @@ backend:
     preBuild:
       commands:
         - cd backend
-        - python -m venv venv        # Create a virtual environment
+        - python3 -m venv venv        # Create a virtual environment
         - source venv/bin/activate   # Activate the virtual environment
     build:
       commands:
-        - pip install --upgrade pip  # Upgrade pip to the latest version
-        - pip install -r requirements.txt  # Install Django dependencies
-        - python manage.py migrate         # Run migrations
+        - pip3 install --upgrade pip  # Upgrade pip to the latest version
+        - pip3 install -r requirements.txt  # Install Django dependencies
+        - python3 manage.py migrate         # Run migrations
   artifacts:
     baseDirectory: backend
     files:
