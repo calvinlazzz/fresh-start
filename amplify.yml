@@ -17,9 +17,22 @@ frontend:
       - frontend/node_modules/**/*  # Cache node_modules
 backend:
   phases:
-    build:
+    preBuild:
       commands:
         - cd backend
+        - python -m venv venv        # Create a virtual environment
+        - source venv/bin/activate   # Activate the virtual environment
+    build:
+      commands:
         - pip install -r requirements.txt  # Install Django dependencies
         - python manage.py migrate         # Run migrations
-        - python manage.py runserver 
+    postBuild:
+      commands:
+        - python manage.py runserver
+  artifacts:
+    baseDirectory: backend
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - backend/venv/**/*  # Cache virtual environment
