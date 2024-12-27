@@ -24,11 +24,9 @@ backend:
         - source venv/bin/activate   # Activate the virtual environment
     build:
       commands:
+        - pip install --upgrade pip  # Upgrade pip to the latest version
         - pip install -r requirements.txt  # Install Django dependencies
         - python manage.py migrate         # Run migrations
-    postBuild:
-      commands:
-        - python manage.py runserver
   artifacts:
     baseDirectory: backend
     files:
@@ -36,3 +34,5 @@ backend:
   cache:
     paths:
       - backend/venv/**/*  # Cache virtual environment
+  runtime:
+    python: 3.8  # Specify the Python version
