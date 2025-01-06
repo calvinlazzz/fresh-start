@@ -26,6 +26,9 @@ backend:
       commands:
         - pip3 install --upgrade pip  # Upgrade pip to the latest version
         - pip3 install -r requirements.txt  # Install Django dependencies
+        - |
+          # Manually update ckeditor_uploader to use re_path instead of url
+          sed -i 's/from django.conf.urls import url/from django.urls import re_path as url/' venv/lib/python3.10/site-packages/ckeditor_uploader/urls.py
         - python3 manage.py migrate         # Run migrations
   artifacts:
     baseDirectory: backend
