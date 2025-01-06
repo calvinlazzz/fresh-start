@@ -35,4 +35,4 @@ backend:
     paths:
       - backend/venv/**/*  # Cache virtual environment
   runtime:
-    python: 3.13  # Specify the Python version
+    python: 3.10  # Specify the Python version
