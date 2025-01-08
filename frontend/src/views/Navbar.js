@@ -165,7 +165,7 @@ function Navbar() {
                     <h1 style={hStyle}>
                         {greet}, {decoded ? decoded.username : "Guest"}!
                     </h1>
-                    <a className="nav-link" onClick={logoutUser} style={{ cursor: "pointer" }}>
+                    <a className="nav-link" id="logout" onClick={logoutUser} style={{ cursor: "pointer" }}>
                         Logout
                     </a>
                 </div>

@@ -23,6 +23,7 @@ urlpatterns = [
     path('weather/<str:city>/', fetch_weather, name='fetch_weather'),
     path('update-city/', update_city, name='update_city'),
     path('user/<int:user_id>/', get_user_city, name='get_user_city'),  # Add this line
+    path('delete-user/', views.delete_user, name='delete_user'),  # Add this line
 
 
 

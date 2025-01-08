@@ -16,6 +16,8 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
+
 import json
 
 
@@ -39,7 +41,19 @@ def getRoutes(request):
     ]
     return Response(routes)
 
-
+@api_view(['DELETE'])
+def delete_user(request):
+    email = request.data.get('email')
+    try:
+        user = User.objects.get(email=email)
+        # Delete related outstanding tokens
+        OutstandingToken.objects.filter(user=user).delete()
+        # Delete the user
+        user.delete()
+        return JsonResponse({'message': 'User deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+    except User.DoesNotExist:
+        return JsonResponse({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
+    
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def testEndPoint(request):
